@@ -1,0 +1,172 @@
+
+-----------------------------------------------------------
+
+
+
+ Two-sample t-tests for drifts only
+
+h_PatientVsAged =
+     1
+p_PatientVsAged =
+    0.0022
+ci_PatientVsAged =
+   -0.3097
+   -0.0759
+stats_PatientVsAged = 
+    tstat: -3.3829
+       df: 27
+       sd: 0.1533
+
+-----------------------------------------------------------
+h_youngVsAged =
+     0
+p_youngVsAge =
+    0.5265
+ci_youngVsAge =
+   -0.0362
+    0.0684
+stats_youngVsAge = 
+    tstat: 0.6452
+       df: 19
+       sd: 0.0540
+
+-----------------------------------------------------------
+h_youngVsPatient =
+     1
+p_youngVsPatient =
+    0.0145
+ci_youngVsPatient =
+    0.0462
+    0.3716
+stats_youngVsPatient = 
+    tstat: 2.6779
+       df: 20
+       sd: 0.1704
+
+-----------------------------------------------------------
+
+ Two-sample t-tests for drifts + microsaccades
+
+h_PatientVsAged =
+     1
+p_PatientVsAged =
+    0.0298
+ci_PatientVsAged =
+   -0.2350
+   -0.0131
+stats_PatientVsAged = 
+    tstat: -2.2937
+       df: 27
+       sd: 0.1455
+
+-----------------------------------------------------------
+h_youngVsAged =
+     0
+p_youngVsAge =
+    0.7862
+ci_youngVsAge =
+   -0.1417
+    0.1845
+stats_youngVsAge = 
+    tstat: 0.2751
+       df: 19
+       sd: 0.1683
+
+-----------------------------------------------------------
+h_youngVsPatient =
+     1
+p_youngVsPatient =
+    0.0057
+ci_youngVsPatient =
+    0.0474
+    0.2435
+stats_youngVsPatient = 
+    tstat: 3.0947
+       df: 20
+       sd: 0.1027
+
+-----------------------------------------------------------
+lm = 
+Linear regression model:
+    patientW ~ 1 + PRL
+
+Estimated Coefficients:
+                   <strong>Estimate </strong><strong>       SE    </strong><strong>     tStat </strong><strong>     pValue  </strong>
+                   <strong>_________</strong>    <strong>_________</strong>    <strong>_______</strong>    <strong>_________</strong>
+    <strong>(Intercept)</strong>      0.98183     0.054218     18.109    1.325e-10
+    <strong>PRL</strong>            -0.041285    0.0085888    -4.8069    0.0003426
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 0.127
+R-squared: 0.64,  Adjusted R-Squared 0.612
+F-statistic vs. constant model: 23.1, p-value = 0.000343
+lm2 = 
+Linear regression model:
+    WhiteningFactor ~ 1 + FixationStability
+
+Estimated Coefficients:
+                         <strong>Estimate</strong><strong>       SE   </strong><strong>     tStat </strong><strong>      pValue  </strong>
+                         <strong>________</strong>    <strong>________</strong>    <strong>_______</strong>    <strong>__________</strong>
+    <strong>(Intercept)</strong>           0.89428    0.023175     38.588    1.1661e-29
+    <strong>FixationStability</strong>    -0.18757    0.045737    -4.1011    0.00024215
+
+Number of observations: 36, Error degrees of freedom: 34
+Root Mean Squared Error: 0.139
+R-squared: 0.331,  Adjusted R-Squared 0.311
+F-statistic vs. constant model: 16.8, p-value = 0.000242
+lmPatient = 
+Linear regression model:
+    WhiteningFactor ~ 1 + FixationStability
+
+Estimated Coefficients:
+                         <strong>Estimate</strong><strong>       SE   </strong><strong>     tStat </strong><strong>      pValue  </strong>
+                         <strong>________</strong>    <strong>________</strong>    <strong>_______</strong>    <strong>__________</strong>
+    <strong>(Intercept)</strong>           0.83537    0.057822     14.447    2.1916e-09
+    <strong>FixationStability</strong>    -0.19337      0.1009    -1.9165      0.077547
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 0.187
+R-squared: 0.22,  Adjusted R-Squared 0.16
+F-statistic vs. constant model: 3.67, p-value = 0.0775
+lm3 = 
+Linear regression model:
+    patientW ~ 1 + visualAcuity
+
+Estimated Coefficients:
+                    <strong>Estimate</strong><strong>      SE   </strong><strong>     tStat </strong><strong>      pValue  </strong>
+                    <strong>________</strong>    <strong>_______</strong>    <strong>_______</strong>    <strong>__________</strong>
+    <strong>(Intercept)</strong>      1.1235     0.13491     8.3278    1.4367e-06
+    <strong>visualAcuity</strong>    -0.4774     0.17448    -2.7361      0.016984
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 0.168
+R-squared: 0.365,  Adjusted R-Squared 0.317
+F-statistic vs. constant model: 7.49, p-value = 0.017
+lmAllDiffusion = 
+Linear regression model:
+    WhiteningFactor ~ 1 + Diffusion
+
+Estimated Coefficients:
+                   <strong>Estimate</strong><strong>       SE   </strong><strong>     tStat </strong><strong>      pValue  </strong>
+                   <strong>________</strong>    <strong>________</strong>    <strong>_______</strong>    <strong>__________</strong>
+    <strong>(Intercept)</strong>      1.2327    0.038135     32.325    4.1118e-27
+    <strong>Diffusion</strong>      -0.27549    0.028308    -9.7319    2.3286e-11
+
+Number of observations: 36, Error degrees of freedom: 34
+Root Mean Squared Error: 0.0873
+R-squared: 0.736,  Adjusted R-Squared 0.728
+F-statistic vs. constant model: 94.7, p-value = 2.33e-11
+lmDiffPatient = 
+Linear regression model:
+    WhiteningFactor ~ 1 + Diffusion
+
+Estimated Coefficients:
+                   <strong>Estimate</strong><strong>       SE   </strong><strong>     tStat </strong><strong>      pValue  </strong>
+                   <strong>________</strong>    <strong>________</strong>    <strong>_______</strong>    <strong>__________</strong>
+    <strong>(Intercept)</strong>      1.2707    0.098127      12.95    8.3397e-09
+    <strong>Diffusion</strong>      -0.30686    0.057611    -5.3265    0.00013745
+
+Number of observations: 15, Error degrees of freedom: 13
+Root Mean Squared Error: 0.118
+R-squared: 0.686,  Adjusted R-Squared 0.662
+F-statistic vs. constant model: 28.4, p-value = 0.000137
