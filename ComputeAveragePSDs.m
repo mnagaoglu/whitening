@@ -1,4 +1,11 @@
 function ComputeAveragePSDs
+% Compute average PSDs across images, trials, and subjects within each
+% group. 
+% Used only once after ProcessRawEyeMovements.m and
+% WhiteningSpectralAnalysisGPU.m are completed without any errors.
+%
+%
+
 close all
 clc
 
@@ -17,6 +24,8 @@ load('C:\Users\spencer\Google Drive\SELAB code\Mehmet\Whitening Analysis\ganglio
 data = eyeMovements;
 clear eyeMovements;
 
+% % Compute fixation stability if a file that has this info does not
+% % already exist.
 % FS = FixStab(data);
 load('FS_new.mat','FS');
 

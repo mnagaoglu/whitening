@@ -1,8 +1,11 @@
 function WhiteningSpectralAnalysisPar
-
+%% NOTE: THIS IS OBSOLETE. USE WhiteningSpectralAnalysisGPU.m !!!
+%
+% Creates EM modulated movies and performs spectral analyses. It uses
+% parpool to speed up the process. 
 close all force;
 clc;
-
+%%
 load('E:\\Eye movement data for Whitening study\\processedData.mat');
 minLength = 1.7; % seconds
 samplewindow = 512;

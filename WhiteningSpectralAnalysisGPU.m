@@ -1,4 +1,11 @@
 function WhiteningSpectralAnalysisGPU
+% Creates EM modulated movies and performs spectral analyses. 
+% Does Notch filtering of EM traces
+% Use GPU for speed up
+% Imports "missingData" and "processedData" automatically in "readyToAnalyzeData_new"
+% Output files are saved in the following format: "im_%d_group_%d_j_%d_noresize_T128_clean.mat"
+%
+% Check E: drive on SELAB_Workhorse.
 
 close all force;
 clc;
@@ -69,24 +76,28 @@ end
 % clear eyeMovements;
 
 group = group(usefulData);
-groupLabels = {'Old - Drifts','Young - Drifts','Patient - Drifts','Old - Drifts+Microsaccades','Young - Drifts+Microsaccades','Patients - Drifts+Microsaccades'};
-colors = [0.93 0.69 0.13
-          0 0.45 0.74
-          1 0 0.4];
+groupLabels = {'Old - Drifts','Young - Drifts','Patient - Drifts','Old - All','Young - All','Patients - All'};
+colors = [1 0 0
+          0 0 0
+          0 0 1];
 figure;
 for i=1:3
     indices = group == i;
     dPS = mean(driftPS(:,indices),2);
     pPS = mean(positionPS(:,indices),2);
     d(i) = semilogx((driftF),10*log10(dPS),'-','Color',colors(i,:),'LineWidth',2); hold on;
-    p(i) = semilogx((positionF),10*log10(pPS),'-.','Color',d(i).Color,'LineWidth',2); hold on;
+    p(i) = semilogx((positionF),10*log10(pPS),'--','Color',d(i).Color,'LineWidth',2); hold on;
 end
 
 xlabel('Temporal frequency (Hz)')
 ylabel('Spectral density (dB)')
+
 set(gca,'FontSize',14);
-grid on;
+grid on; box off;
 legend([d p],groupLabels,'FontSize',10);
+xlim([.4 300])
+
+print([pwd filesep 'results' filesep 'EM_spectra'],'-r300','-dtiff');
 
 % figure;
 % edges = 5:1:30;
