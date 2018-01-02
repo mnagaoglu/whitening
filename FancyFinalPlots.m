@@ -2,14 +2,16 @@ function FancyFinalPlots
 close all force;
 clc;
 
-backgroundColor = [0 0 0];
-axesColor = [1 1 1];
-% myColors = {'r','k','b'};
-myColors = {'g','w','y'};
+backgroundColor = [1 1 1];
+axesColor = [0 0 0];
+myColors = {'r','k','b'};
+% myColors = {'g','w','y'};
 alp = 0.6; 
+% fileFormat = '-depsc';
+fileFormat = '-dtiff';
 
 
-isSave = 0;
+isSave = 1;
 if isSave
     if exist([pwd filesep 'figures/stats_new.txt'],'file')
         delete([pwd filesep 'figures/stats_new.txt']);
@@ -63,7 +65,7 @@ visualAcuity = newVisualAcuity;
 %% drifts only
 sfl = length(sf);
 tfl = length(tf);
-figure('units','normalized','outerposition',[.2 .2 .5 .30],...
+figure('units','normalized','outerposition',[.2 .2 .5 .35],...
     'Color',backgroundColor,'InvertHardcopy','off');
 subplot(1,3,2);
 plot3dInPerspective(sf(2:sfl),tf(2:tfl),...
@@ -89,12 +91,12 @@ ax.Color = backgroundColor;
 ax.XColor = axesColor;
 ax.YColor = axesColor;
 if isSave 
-print([pwd filesep 'figures' filesep 'drift_2D_new.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'drift_2D_new'],'-r300',fileFormat);
 end
 
 %% position
-figure('units','normalized','outerposition',[.2 .2 .5 .30],...
-    'Color',[0 0 0],'InvertHardcopy','off');
+figure('units','normalized','outerposition',[.2 .2 .5 .35],...
+    'Color',backgroundColor,'InvertHardcopy','off');
 subplot(1,3,2);
 plot3dInPerspective(sf(2:sfl),tf(2:tfl),...
     10*log10(posAVG((2:tfl),(2:sfl),2)),0,1,0,'Age-matched',myColors{2});
@@ -117,12 +119,12 @@ ax.Color = backgroundColor;
 ax.XColor = axesColor;
 ax.YColor = axesColor;
 if isSave
-print([pwd filesep 'figures' filesep 'drift_microsac_2D_new.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'drift_microsac_2D_new'],'-r300',fileFormat);
 end
 
 %% 1D plots
 %% temporal
-figure('units','normalized','outerposition',[.2 .2 .35 .30],...
+figure('units','normalized','outerposition',[.2 .2 .38 .38],...
     'Color',backgroundColor,'InvertHardcopy','off');
 subplot(1,2,1)
 th = 1.5;
@@ -167,7 +169,7 @@ xlim([4 240])
 ylim([0 60])
 grid on;
 title('drifts + microsaccades')
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',[10 100]);
 set(gca,'XTickLabel',{'10','100'})
 ax = gca;
@@ -176,14 +178,14 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'temporal_1D_new.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'temporal_1D_new'],'-r300',fileFormat);
 end
 
 
 
 
 %% spatial 
-figure('units','normalized','outerposition',[.2 .2 .35 .30],...
+figure('units','normalized','outerposition',[.2 .2 .38 .38],...
     'Color',backgroundColor,'InvertHardcopy','off');
 subplot(1,2,1)
 PlotPatchedSE(sf(2:sfl),(drift_1d_AVG(:,2)),(drift_1d_SE(:,2)),myColors{2},alp);
@@ -200,7 +202,7 @@ semilogx(sf(2:sfl),3+10*log10(mean(powerSpectra(:,2:end),1)),'--','Color',myColo
 xlim([.2 65])
 ylim([0 70])
 title('drifts only')
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',[1 10])
 set(gca,'XTickLabel',{'1','10'})
 ax = gca;
@@ -238,7 +240,7 @@ ax.YColor = axesColor;
 
 
 if isSave
-print([pwd filesep 'figures' filesep 'spatial_1D_new.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'spatial_1D_new'],'-r300',fileFormat);
 end
 
 
@@ -261,7 +263,7 @@ else
 end
 
 
-figure('units','normalized','outerposition',[.2 .2 .18 .30],...
+figure('units','normalized','outerposition',[.2 .2 .20 .38],...
     'Color',backgroundColor,'InvertHardcopy','off');
 histogram(imCoeff,15,'FaceColor',[.6 .6 .6],'EdgeColor',myColors{2});
 xlabel('Power Coefficient')
@@ -276,7 +278,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-    print([pwd filesep 'figures' filesep 'imagePower_new.eps'],'-r300','-depsc');
+    print([pwd filesep 'figures' filesep 'imagePower_new'],'-r300',fileFormat);
 end
 
 
@@ -295,7 +297,7 @@ end
 
 
 
-figure('units','normalized','outerposition',[.2 .2 .37 .30],...
+figure('units','normalized','outerposition',[.2 .2 .38 .38],...
     'Color',backgroundColor,'InvertHardcopy','off');
 msize = 40;
 m=0.25;
@@ -403,7 +405,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'whiteningFactors_new.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'whiteningFactors_new'],'-r300',fileFormat);
 end
 
 
@@ -411,7 +413,7 @@ end
 %% eye movement spectra
 %    'edriftF','epositionF','edPS','epPS','edPSse','epPSse'
 
-figure('units','normalized','outerposition',[.2 .2 .35 .30],...
+figure('units','normalized','outerposition',[.2 .2 .38 .38],...
     'Color',backgroundColor,'InvertHardcopy','off');
 subplot(1,2,1)
 th = 1.5;
@@ -429,7 +431,7 @@ title('drifts only')
 xlim([4 240])
 ylim([-60 20])
 grid on;
-set(gca,'FontSize',14)
+set(gca,'FontSize',16)
 set(gca,'XTick',[3 10 30 100]);
 set(gca,'XTickLabel',{'3','10','30','100'})
 ax = gca;
@@ -466,15 +468,14 @@ ax.YColor = axesColor;
 
 
 if isSave
-print([pwd filesep 'figures' filesep 'eyemovementSpectra_new.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'eyemovementSpectra_new'],'-r300',fileFormat);
 end
 
 
 
 %% PRL vs WF
-% figure('units','normalized','outerposition',[.2 .2 .68 .29],...
-%     'Color',backgroundColor,'InvertHardcopy','off');
-figure('Color',backgroundColor,'InvertHardcopy','off');
+figure('Color',backgroundColor,'InvertHardcopy','off','units','normalized',...
+    'outerposition',[.1 .1 0.1990    0.3861]);
 % subplot(1,4,1)
 patientW = (whitened-driftCoeff(1:numOfObservers(3),3))/whitened;
 % scatter(PRL, patientW); hold on;
@@ -510,13 +511,14 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_PRL.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'correlations_PRL'],'-r300',fileFormat);
 end
 
 
 %% Fixation stability vs Whitening factor
 % subplot(1,4,3)
-figure('Color',backgroundColor,'InvertHardcopy','off');
+figure('Color',backgroundColor,'InvertHardcopy','off','units','normalized',...
+    'outerposition',[.1 .1 0.1990    0.3861]);
 youngW = (whitened-driftCoeff(1:numOfObservers(2),2))/whitened;
 oldW = (whitened-driftCoeff(1:numOfObservers(1),1))/whitened;
 patientW = (whitened-driftCoeff(1:numOfObservers(3),3))/whitened;
@@ -561,13 +563,14 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_fixstab.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'correlations_fixstab'],'-r300',fileFormat);
 end
 
 
 
 %% Visual acuity vs whitening factor
-figure('Color',backgroundColor,'InvertHardcopy','off');
+figure('Color',backgroundColor,'InvertHardcopy','off','units','normalized',...
+    'outerposition',[.1 .1 0.1990    0.3861]);
 % subplot(1,4,2)
 patientW = (whitened-driftCoeff(1:numOfObservers(3),3))/whitened;
 tbl = table(visualAcuity',patientW,'VariableNames',{'visualAcuity','patientW'});
@@ -603,7 +606,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_va.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'correlations_va'],'-r300',fileFormat);
 end
 
 
@@ -635,7 +638,8 @@ end
 
 
 
-figure('Color',backgroundColor,'InvertHardcopy','off');
+figure('Color',backgroundColor,'InvertHardcopy','off','units','normalized',...
+    'outerposition',[.1 .1 0.1990    0.3861]);
 % subplot(1,4,4);
 cla;
 tblAllDiffusion = table(log10(allDrift)',allW,'VariableNames',{'Diffusion','WhiteningFactor'});
@@ -677,7 +681,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_diffusion.eps'],'-r300','-depsc');
+print([pwd filesep 'figures' filesep 'correlations_diffusion'],'-r300',fileFormat);
 end
 
 
