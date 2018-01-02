@@ -1,5 +1,10 @@
 function ConvertPPM2JPGand16to8Bit
-
+% Original images in the database had to be converted to 8bit grayscale
+% images. Original format was PPM 16bit.
+% 
+% Used only once at the beginning of the project.
+%
+%
 directory = 'E:\\Eye movement data for Whitening study\\Natural Images database\\';
 
 listing = dir(directory);

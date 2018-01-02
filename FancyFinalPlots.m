@@ -1,4 +1,6 @@
 function FancyFinalPlots
+% The final function to plot everything in publication/presentation quality.
+
 close all force;
 clc;
 
@@ -9,14 +11,15 @@ myColors = {'r','k','b'};
 alp = 0.6; 
 % fileFormat = '-depsc';
 fileFormat = '-dtiff';
-
+global fsize;
+fsize = 15;
 
 isSave = 1;
 if isSave
-    if exist([pwd filesep 'figures/stats_new.txt'],'file')
-        delete([pwd filesep 'figures/stats_new.txt']);
+    if exist([pwd filesep 'results/stats_new.txt'],'file')
+        delete([pwd filesep 'results/stats_new.txt']);
     end
-    diary([pwd filesep 'figures/stats_new.txt']);
+    diary([pwd filesep 'results/stats_new.txt']);
 end
 load('E:\\Eye movement data for Whitening study\\Natural Images database\\To be analyzed\\PSimages_512.mat');
 
@@ -65,7 +68,7 @@ visualAcuity = newVisualAcuity;
 %% drifts only
 sfl = length(sf);
 tfl = length(tf);
-figure('units','normalized','outerposition',[.2 .2 .5 .35],...
+figure('units','normalized','outerposition',[.2 .2 .6 .35],...
     'Color',backgroundColor,'InvertHardcopy','off');
 subplot(1,3,2);
 plot3dInPerspective(sf(2:sfl),tf(2:tfl),...
@@ -91,11 +94,11 @@ ax.Color = backgroundColor;
 ax.XColor = axesColor;
 ax.YColor = axesColor;
 if isSave 
-print([pwd filesep 'figures' filesep 'drift_2D_new'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'drift_2D_new'],'-r300',fileFormat);
 end
 
 %% position
-figure('units','normalized','outerposition',[.2 .2 .5 .35],...
+figure('units','normalized','outerposition',[.2 .2 .6 .35],...
     'Color',backgroundColor,'InvertHardcopy','off');
 subplot(1,3,2);
 plot3dInPerspective(sf(2:sfl),tf(2:tfl),...
@@ -119,7 +122,7 @@ ax.Color = backgroundColor;
 ax.XColor = axesColor;
 ax.YColor = axesColor;
 if isSave
-print([pwd filesep 'figures' filesep 'drift_microsac_2D_new'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'drift_microsac_2D_new'],'-r300',fileFormat);
 end
 
 %% 1D plots
@@ -141,7 +144,7 @@ title('drifts only')
 xlim([4 240])
 ylim([0 60])
 grid on;
-set(gca,'FontSize',14)
+set(gca,'FontSize',fsize)
 set(gca,'XTick',[10 100]);
 set(gca,'XTickLabel',{'10','100'})
 ax = gca;
@@ -169,7 +172,7 @@ xlim([4 240])
 ylim([0 60])
 grid on;
 title('drifts + microsaccades')
-set(gca,'FontSize',16)
+set(gca,'FontSize',fsize)
 set(gca,'XTick',[10 100]);
 set(gca,'XTickLabel',{'10','100'})
 ax = gca;
@@ -178,7 +181,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'temporal_1D_new'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'temporal_1D_new'],'-r300',fileFormat);
 end
 
 
@@ -202,7 +205,7 @@ semilogx(sf(2:sfl),3+10*log10(mean(powerSpectra(:,2:end),1)),'--','Color',myColo
 xlim([.2 65])
 ylim([0 70])
 title('drifts only')
-set(gca,'FontSize',16)
+set(gca,'FontSize',fsize)
 set(gca,'XTick',[1 10])
 set(gca,'XTickLabel',{'1','10'})
 ax = gca;
@@ -230,7 +233,7 @@ grid on;
 xlim([.2 65])
 ylim([0 70])
 title('drifts + microsaccades')
-set(gca,'FontSize',14)
+set(gca,'FontSize',fsize)
 set(gca,'XTick',[1 10])
 set(gca,'XTickLabel',{'1','10'})
 ax = gca;
@@ -240,7 +243,7 @@ ax.YColor = axesColor;
 
 
 if isSave
-print([pwd filesep 'figures' filesep 'spatial_1D_new'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'spatial_1D_new'],'-r300',fileFormat);
 end
 
 
@@ -269,7 +272,7 @@ histogram(imCoeff,15,'FaceColor',[.6 .6 .6],'EdgeColor',myColors{2});
 xlabel('Power Coefficient')
 ylabel('Frequency')
 box off
-set(gca,'FontSize',14)
+set(gca,'FontSize',fsize)
 xlim([0.5 3.5])
 ylim([0 15])
 ax = gca;
@@ -278,7 +281,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-    print([pwd filesep 'figures' filesep 'imagePower_new'],'-r300',fileFormat);
+    print([pwd filesep 'results' filesep 'imagePower_new'],'-r300',fileFormat);
 end
 
 
@@ -393,7 +396,7 @@ lh.TextColor = myColors{2};
 lh.EdgeColor = myColors{2};
 
 xlabel('"Whitening" factor')
-set(gca,'FontSize',14)
+set(gca,'FontSize',fsize)
 set(gca,'YTick',[3 7 11])
 set(gca,'YTickLabel',{'Young','Age-Matched','AMD'})
 xlim([0 1.2])
@@ -405,7 +408,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'whiteningFactors_new'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'whiteningFactors_new'],'-r300',fileFormat);
 end
 
 
@@ -431,7 +434,7 @@ title('drifts only')
 xlim([4 240])
 ylim([-60 20])
 grid on;
-set(gca,'FontSize',16)
+set(gca,'FontSize',fsize)
 set(gca,'XTick',[3 10 30 100]);
 set(gca,'XTickLabel',{'3','10','30','100'})
 ax = gca;
@@ -458,7 +461,7 @@ xlim([4 240])
 ylim([-60 20])
 grid on;
 title('drifts + miscrosaccades')
-set(gca,'FontSize',14)
+set(gca,'FontSize',fsize)
 set(gca,'XTick',[3 10 30 100]);
 set(gca,'XTickLabel',{'3','10','30','100'})
 ax = gca;
@@ -468,7 +471,7 @@ ax.YColor = axesColor;
 
 
 if isSave
-print([pwd filesep 'figures' filesep 'eyemovementSpectra_new'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'eyemovementSpectra_new'],'-r300',fileFormat);
 end
 
 
@@ -493,9 +496,9 @@ ph(3).Color = myColors{3};
 ph(3).LineWidth = 2;
 ph(4).Color = myColors{3};
 ph(4).LineWidth = 2;
-set(gca,'FontSize',12)
+set(gca,'FontSize',fsize)
 box off;
-xlabel('PRL eccentricity (deg)')
+xlabel(sprintf('PRL eccentricity \n (deg)'))
 ylabel('Whitening factor')
 title('')
 lh = findobj(gcf,'Tag','legend');
@@ -511,7 +514,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_PRL'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'correlations_PRL'],'-r300',fileFormat);
 end
 
 
@@ -546,9 +549,9 @@ plot(log10(linspace(min(fsAll),max(fsAll),100)),...
 plot(log10(linspace(min(fixStab(1:numOfObservers(3),3)),max(fixStab(1:numOfObservers(3),3)),100)),...
     lmPatient.feval(log10(linspace(min(fixStab(1:numOfObservers(3),3)),max(fixStab(1:numOfObservers(3),3)),100))),...
     '-','Color',myColors{3},'LineWidth',2);
-set(gca,'FontSize',12)
+set(gca,'FontSize',fsize)
 box off;
-xlabel('log[Fixation stability] (log[deg^2])')
+xlabel(sprintf('Fixation instability \n (log[deg^2])'))
 ylabel('Whitening factor')
 lh = legend('Young','Age-Matched','AMD','Fit to all','Fit to AMD');
 lh.Location = 'best';
@@ -563,7 +566,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_fixstab'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'correlations_fixstab'],'-r300',fileFormat);
 end
 
 
@@ -587,9 +590,9 @@ ph(3).Color = myColors{3};
 ph(3).LineWidth = 2;
 ph(4).Color = myColors{3};
 ph(4).LineWidth = 2;
-set(gca,'FontSize',12)
+set(gca,'FontSize',fsize)
 box off;
-xlabel('Visual acuity (logMAR)')
+xlabel(sprintf('Visual acuity \n (logMAR)'))
 ylabel('Whitening factor')
 title('')
 lh = findobj(gcf,'Tag','legend');
@@ -606,7 +609,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_va'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'correlations_va'],'-r300',fileFormat);
 end
 
 
@@ -664,9 +667,9 @@ plot(log10(linspace(min(allDrift),max(allDrift),100)),...
 plot(log10(linspace(min(diffusionDrift),max(diffusionDrift),100)),...
     lmDiffPatient.feval(log10(linspace(min(diffusionDrift),max(diffusionDrift),100))),...
     '-','Color',myColors{3},'LineWidth',2);
-set(gca,'FontSize',12)
+set(gca,'FontSize',fsize)
 box off;
-xlabel('log[Diffusion constant] (log[arcmin^2/sec])')
+xlabel(sprintf('log[Diffusion constant] \n (log[arcmin^2/sec])'))
 ylabel('Whitening factor')
 lh = legend('Young','Age-Matched','AMD','Fit to all','Fit to AMD');
 lh.Location = 'best';
@@ -681,7 +684,7 @@ ax.XColor = axesColor;
 ax.YColor = axesColor;
 
 if isSave
-print([pwd filesep 'figures' filesep 'correlations_diffusion'],'-r300',fileFormat);
+print([pwd filesep 'results' filesep 'correlations_diffusion'],'-r300',fileFormat);
 end
 
 
@@ -713,4 +716,119 @@ pp.FaceAlpha = a;
 pp.EdgeColor = 'none';
 set(gca,'XScale','log')
 hold on;
+end
+
+
+
+function plot3dInPerspective(sf,tf,S, ...
+    isColorbar,isX,isY,titlestr,cols)
+
+if nargin<4
+    isColorbar = 0;
+end
+
+newSf = logspace(min(log10(sf)),max(log10(sf)),512);
+newTf = logspace(min(log10(tf)),max(log10(tf)),512);
+[X,Y] = meshgrid(sf,tf);
+[Xq,Yq] = meshgrid(newSf,newTf);
+newS = interp2(X,Y,S,Xq,Yq,'cubic');
+
+
+surf(newSf,newTf,newS,'EdgeColor','none','LineWidth',0.25,'EdgeAlpha',.5);
+xlim([.25 65])
+ylim([4 240])
+minZ = -5;
+maxZ = 72;
+zlim([minZ maxZ])
+view(2);set(gca,'XScale','log');
+set(gca,'YScale','log');
+colormap(jet(256))
+set(gca,'CLim',[minZ maxZ])
+set(gca,'XTick',[1 3 10 30])
+set(gca,'XTickLabel',{'1','3','10','30'})
+set(gca,'YTick',[3 10 30 100]);
+set(gca,'YTickLabel',{'3','10','30','100'})
+ax = gca;
+ax.TickDir = 'out';
+ax.TickLength = [0.02 0.02];
+title(titlestr);
+
+if isX
+    xlabel('Spatial frequency (cpd)');
+else
+    xlabel(' ')
+end
+if isY
+	ylabel('Temporal frequency (Hz)');
+else
+    ylabel(' ')
+end
+global fsize;
+set(gca,'FontSize',fsize);
+pause(.2);
+s1Pos = get(gca,'position');
+if isColorbar
+    cb = colorbar('eastoutside');
+    cb.Label.String = 'Spectral Density (dB)';
+    cb.Color = cols;
+end
+pause(.2);
+s2Pos = get(gca,'position');
+s2Pos(3:4) = s1Pos(3:4);
+set(gca,'position',s2Pos);
+
+if isColorbar
+   cb.Position = cb.Position./[1 1 3 1]; 
+end
+
+
+end
+
+
+
+function [coeff, fitresult, gof] = getPowerCoeff(currentSF, currentPS)
+%CREATEFIT(CURRENTSF,CURRENTPS)
+%  Create a fit.
+%
+%  Data for 'untitled fit 1' fit:
+%      X Input : currentSF
+%      Y Output: currentPS
+%  Output:
+%      fitresult : a fit object representing the fit.
+%      gof : structure with goodness-of fit info.
+%
+%  See also FIT, CFIT, SFIT.
+
+%  Auto-generated by MATLAB on 01-Feb-2017 16:34:17
+
+
+%% Fit: 'untitled fit 1'.
+[xData, yData] = prepareCurveData( currentSF, currentPS );
+
+% Set up fittype and options.
+ft = fittype( '(-a*x+b)', 'independent', 'x', 'dependent', 'y' );
+opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+opts.Algorithm = 'Levenberg-Marquardt';
+opts.Display = 'Off';
+opts.Robust = 'Bisquare';
+opts.StartPoint = [0.722905352239109 0.811753323578174];
+
+
+% Fit model to data.
+[fitresult, gof] = fit( xData, yData, ft, opts );
+
+coeff = fitresult.a;
+% 
+% % Plot fit with data.
+% figure(99);hold on;
+% h = plot( fitresult, xData, yData );
+% legend( h, 'currentPS vs. currentSF', 'untitled fit 1', 'Location', 'NorthEast' );
+% % Label axes
+% xlabel currentSF
+% ylabel currentPS
+% grid on
+% set(gca,'XScale','log')
+% set(gca,'YScale','log')
+
+
 end
