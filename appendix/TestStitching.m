@@ -3,7 +3,7 @@ function TestStitching
 close all;
 clc;
 
-N = 50;
+N = 1000;
 
 % load the image, note that the original field of view for this image is 40
 % deg in horizontal dimension.
@@ -56,9 +56,9 @@ for di = 1:length(D)
             noMotionSt(i,:) = im(y, x : x+lineLengthPx-1);
         end
         
-%         % remove DC
-%         st = st - mean(st(:));
-%         noMotionSt = noMotionSt - mean(noMotionSt(:));
+        % remove DC
+        st = st - mean(st(:));
+        noMotionSt = noMotionSt - mean(noMotionSt(:));
 
         % compute the frequency response
         [Fst,tf,sf] = GetFFT(t,lineLengthPx, st, pixelSizeInDeg);
@@ -117,25 +117,24 @@ for di = 1:length(D)
     set(gca,'fontsize',16);
 
     subplot(1,7,6)
-    plot(sf, 2*sum(((avgPSD)), 1),'-r','LineWidth',2);
+    plot(sf, mean((20*log10(2*avgPSD)), 1),'-r','LineWidth',2);
     hold on;
-    plot(sf, 2*sum(((noMotionAvgPSD)), 1),'-b','LineWidth',2);
-    ylabel('power');
+    plot(sf, mean((20*log10(2*noMotionAvgPSD + 0.00001)), 1),'-b','LineWidth',2);
+    ylabel('power (dB)');
     xlabel('spatial freq. (cpd)');
-    set(gca,'fontsize',16,'yscale','log','xscale','log');
-    xlim([.3 200])
+    set(gca,'fontsize',16,'yscale','linear','xscale','log');
+    xlim([.3 60])
     grid on;
     
     
     subplot(1,7,7)
-    plot(tf, 2*sum(((avgPSD)), 2),'-r','LineWidth',2);
+    plot(tf, mean((20*log10(2*avgPSD)), 2),'-r','LineWidth',2);
     hold on;
-    plot(tf, 2*sum(((noMotionAvgPSD)), 2),'-b','LineWidth',2);
-    ylabel('power');
+    plot(tf, mean((20*log10(2*noMotionAvgPSD + 0.00001)), 2),'-b','LineWidth',2);
+    ylabel('power (dB)');
     xlabel('temporal freq. (Hz)');
-    set(gca,'fontsize',16,'yscale','linear','xscale','linear');
-    xlim([-100 100])
-    ylim([0 50]);
+    set(gca,'fontsize',16,'yscale','linear','xscale','log');
+    xlim([2 100])
     grid on;
 
 end
