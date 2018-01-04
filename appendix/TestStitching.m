@@ -4,7 +4,7 @@ close all;
 clc;
 
 % iterations
-N = 10;
+N = 50;
 
 % load the image, note that the original field of view for this image is 40
 % deg in horizontal dimension.
@@ -59,6 +59,8 @@ for di = 1:length(D)
         for i=1:length(t)
             st(i,:) = im(y, x+eyeMovementsPx(i) : x+eyeMovementsPx(i)+lineLengthPx-1);
         end
+        
+%         imwrite(st,'forest.jpg');
         
         % remove DC
         st = st - mean(st(:));
