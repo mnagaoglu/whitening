@@ -3,42 +3,48 @@ function TestStitching
 close all;
 clc;
 
-N = 1000;
+% iterations
+N = 10;
 
 % load the image, note that the original field of view for this image is 40
 % deg in horizontal dimension.
 fieldOfView = 40; % deg
-im = imread('cps201004281302.jpg');
-im = double(im)/255;
-
-% get the size of the image in pixels
-[height, width] = size(im);
-
-% compute the pixel size in deg
-pixelSizeInDeg = fieldOfView / width;
 
 % the following defines how long of a line will be taken from the image.
 % This will effectively define the "width" of our space-time image.
 lineLengthPx = 512; 
 
-% find the corresponding "aperture size" for the selected line width
-apertureSizeDeg = pixelSizeInDeg * lineLengthPx;
-
 % define temporal parameters
 T = 1; % seconds 
-Fs = 256; % Hz
+Fs = 512; % Hz
 D = [100]; % arcmin^2/sec diffusion constant;
 t = linspace(-T/2,T/2, T*Fs);
 
+% get the list of images 
+fList = dir([pwd filesep 'images' filesep '*.jpg']);
 
 for di = 1:length(D)
 
     W = zeros(N,T*Fs);
     
     avgPSD = zeros(length(T*Fs), lineLengthPx);
-    noMotionAvgPSD = avgPSD;
+    noMotionAvgPSD = zeros(lineLengthPx,1);
     
     for iter = 1:N
+        
+        % get a random image
+        imageID = randi(length(fList),1);
+        im = imread([fList(imageID).folder filesep fList(imageID).name]);
+        im = double(im)/255;
+        
+        % get the size of the image in pixels
+        [height, width] = size(im);
+
+        % compute the pixel size in deg
+        pixelSizeInDeg = fieldOfView / width;
+
+        % find the corresponding "aperture size" for the selected line width
+        apertureSizeDeg = pixelSizeInDeg * lineLengthPx;
 
         % get a simulated eye movement trace in deg
         W(iter,:) = SimulateEyeMovements(T, Fs,D(di));
@@ -50,23 +56,20 @@ for di = 1:length(D)
 
         % create the space-time image
         st = zeros(length(T*Fs), lineLengthPx);
-        noMotionSt = st;
         for i=1:length(t)
             st(i,:) = im(y, x+eyeMovementsPx(i) : x+eyeMovementsPx(i)+lineLengthPx-1);
-            noMotionSt(i,:) = im(y, x : x+lineLengthPx-1);
         end
         
         % remove DC
         st = st - mean(st(:));
-        noMotionSt = noMotionSt - mean(noMotionSt(:));
 
         % compute the frequency response
         [Fst,tf,sf] = GetFFT(t,lineLengthPx, st, pixelSizeInDeg);
-        noFst = GetFFT(t,lineLengthPx, noMotionSt, pixelSizeInDeg);
+        noFst = fftshift(abs(fft(im(y, x : x+lineLengthPx-1))).^2)';
 
         % sum up PSDs 
         avgPSD = avgPSD + abs(fftshift(Fst)).^2/(T*Fs*lineLengthPx);
-        noMotionAvgPSD = noMotionAvgPSD + abs(fftshift(noFst)).^2/(T*Fs*lineLengthPx);
+        noMotionAvgPSD = noMotionAvgPSD + noFst/(T*Fs);
     end
 
     % normalize to make it average rather than sum
@@ -74,8 +77,8 @@ for di = 1:length(D)
     noMotionAvgPSD = noMotionAvgPSD / N;
 
     figure('name',sprintf('D:%d',D(di)),'units',...
-        'normalized','outerposition',[-2 -1 2 0.4]); 
-    subplot(1,7,1)
+        'normalized','outerposition',[0.1891    0.0908    0.68    0.7375]); 
+    subplot(2,3,1)
     plot(t,W','-r','LineWidth',2);
     hold on;
     plot(t,W(end,:)','-k','LineWidth',2);
@@ -84,59 +87,57 @@ for di = 1:length(D)
     xlabel('time (sec)');
     ylabel('position (deg)');
     ylim([min(W(N,:))-apertureSizeDeg/2 max(W(N,:))+apertureSizeDeg/2]);
-
-    subplot(1,7,2)
+    axis square;
+    
+    subplot(2,3,2)
     imagesc([min(W(N,:))-apertureSizeDeg/2 max(W(N,:))+apertureSizeDeg/2],[min(t) max(t)],st);
     colormap(gca,gray);
     ylabel('time (sec)');
     xlabel('position (deg)');
     set(gca,'fontsize',16);
     title('eye motion','color','r')
-
-    subplot(1,7,3)
-    imagesc([min(W(N,:))-apertureSizeDeg/2 max(W(N,:))+apertureSizeDeg/2],[min(t) max(t)],noMotionSt);
-    colormap(gca,gray);
-    ylabel('time (sec)');
-    xlabel('position (deg)');
-    set(gca,'fontsize',16);    
-    title('no motion','color','b')
+    axis square;
     
-    subplot(1,7,4)
-    imagesc([min(sf) max(sf)],[min(tf) max(tf)],(log10(avgPSD)));
+    subplot(2,3,3)
+    imagesc([min(sf) max(sf)],[min(tf) max(tf)],(20*log10(avgPSD)));
     colormap(gca,gray);
     ylabel('temporal freq. (Hz)');
     xlabel('spatial freq. (cpd)');
     set(gca,'fontsize',16);
+    axis square;
     
-    
-    subplot(1,7,5)
-    imagesc([min(sf) max(sf)],[min(tf) max(tf)],(log10(noMotionAvgPSD)));
-    colormap(gca,gray);
-    ylabel('temporal freq. (Hz)');
-    xlabel('spatial freq. (cpd)');
-    set(gca,'fontsize',16);
 
-    subplot(1,7,6)
-    plot(sf, mean((20*log10(2*avgPSD)), 1),'-r','LineWidth',2);
+%     subplot(2,3,5)
+%     plot(sf, 20*log10(sum(2*avgPSD, 1)),'-r','LineWidth',2);
+%     hold on;
+%     plot(sf, 20*log10(sum(2*noMotionAvgPSD  + 0.00001, 1)),'-b','LineWidth',2);
+%     ylabel('power (dB)');
+%     xlabel('spatial freq. (cpd)');
+%     set(gca,'fontsize',16,'yscale','linear','xscale','log');
+%     xlim([.3 60])
+%     grid on;
+    
+    subplot(2,3,5)
+    plot(sf, 20*log10(2*avgPSD(find(tf>10,1),:)),'-r','LineWidth',2);
     hold on;
-    plot(sf, mean((20*log10(2*noMotionAvgPSD + 0.00001)), 1),'-b','LineWidth',2);
+    plot(sf, 20*log10(2*noMotionAvgPSD),'-b','LineWidth',2);
     ylabel('power (dB)');
     xlabel('spatial freq. (cpd)');
     set(gca,'fontsize',16,'yscale','linear','xscale','log');
     xlim([.3 60])
     grid on;
+    axis square;
     
-    
-    subplot(1,7,7)
-    plot(tf, mean((20*log10(2*avgPSD)), 2),'-r','LineWidth',2);
+    subplot(2,3,6)
+    plot(tf, 20*log10(sum(2*avgPSD, 2)),'-r','LineWidth',2);
     hold on;
-    plot(tf, mean((20*log10(2*noMotionAvgPSD + 0.00001)), 2),'-b','LineWidth',2);
+    plot(tf, 20*log10(0.00001),'-b','LineWidth',2);
     ylabel('power (dB)');
     xlabel('temporal freq. (Hz)');
     set(gca,'fontsize',16,'yscale','linear','xscale','log');
     xlim([2 100])
     grid on;
-
+    axis square;
 end
 
 
