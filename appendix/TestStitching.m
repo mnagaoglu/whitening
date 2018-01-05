@@ -15,7 +15,7 @@ N = 5000;
 % define temporal parameters
 T = fliplr([1/8 1/4 1/2 1 2]); % seconds 
 Fs = 512; % Hz
-D = 100; % arcmin^2/sec diffusion constant;
+D = 40; % arcmin^2/sec diffusion constant;
 
 figure('units','normalized','outerposition',[-0.6750   -0.2000    0.6750    0.5000]);
 for i=1:length(T)
@@ -28,8 +28,8 @@ for i=1:length(T)
             [W, t, dt] = SimulateEyeMovements(T(i),Fs,D);
 
             % take fft
-            tempFW = 2*abs(fftshift(fft(W)));
-            FW = FW + tempFW.^2;
+            tempFW = abs(fftshift(fft(W)));
+            FW = FW + 2* (tempFW.^2 / (T(i)*Fs));
 
             if isPlotTime
                 subplot(1,2,1)
