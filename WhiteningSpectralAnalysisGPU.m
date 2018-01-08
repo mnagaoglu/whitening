@@ -6,6 +6,12 @@ function WhiteningSpectralAnalysisGPU
 % Output files are saved in the following format: "im_%d_group_%d_j_%d_noresize_T128_clean.mat"
 %
 % Check E: drive on SELAB_Workhorse.
+%
+%
+% To get realistic and naturalistic content, 100 images from 
+% http://natural-scenes.cps.utexas.edu/db.shtml were used (~40deg field of 
+% view horizontally).
+%
 
 close all force;
 clc;
