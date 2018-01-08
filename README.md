@@ -9,4 +9,7 @@ Order of things:
   FancyFinalPlots.m : The final plotting script for publication quality images. <br>
 
 
-MNA 1/1/2018  mnagaoglu@gmail.com
+To get realistic and naturalistic content, 100 images from http://natural-scenes.cps.utexas.edu/db.shtml were used (~40deg field of view horizontally).
+
+
+MNA 1/2018  mnagaoglu@gmail.com
