@@ -15,7 +15,7 @@ clc;
 
 % to use real eye movement traces instead of simulating them as Brownian
 % motion, set the following flag to 1.
-isRealEM = 0;
+isRealEM = 1;
 if isRealEM
     global organizedData;
     filePath = '../../ganglion/organizedData.mat';
@@ -38,6 +38,8 @@ if isRealEM
                    'DesignMethod','butter','SampleRate',480);
     end
 end
+
+is2D = 0; % set to 0, if you want to fix vertical position and just use horizontal
 
 % iterations
 N = 100;
@@ -105,8 +107,13 @@ for di = 1:length(D)
         % create the space-time image
         st = zeros(length(T*Fs), lineLengthPx);
         for i=1:length(t)
-            st(i,:) = im(y+eyeMovementsPxY(i), ...
-                         x+eyeMovementsPxX(i) : x+eyeMovementsPxX(i)+lineLengthPx-1);
+            if is2D
+                st(i,:) = im(y+eyeMovementsPxY(i), ...
+                             x+eyeMovementsPxX(i) : x+eyeMovementsPxX(i)+lineLengthPx-1);
+            else
+                st(i,:) = im(y, ...
+                             x+eyeMovementsPxY(i) : x+eyeMovementsPxY(i)+lineLengthPx-1);
+            end
         end
 
         % compute the frequency response
@@ -133,46 +140,38 @@ for di = 1:length(D)
     end
     
     figure('name',titleText,'units',...
-        'normalized','outerposition',[0.1891    0.0908   0.7417    0.8905]); 
-    subplot(2,3,1)
+        'normalized','outerposition',[-1.2607    0.5781    1.2607    0.4000]); 
+    subplot(1,5,1)
     plot(t,Wx','-r','LineWidth',2);
     hold on;
     plot(t,Wx(end,:)','-k','LineWidth',2);
-    plot([0 0],[-.5 .5]*apertureSizeDeg + Wx(N,find(t>0,1))*[1 1],'-k','LineWidth',2);
+%     plot([0 0],[-.5 .5]*apertureSizeDeg + Wx(N,find(t>0,1))*[1 1],'-k','LineWidth',2);
     set(gca,'fontsize',16);
     xlabel('time (sec)');
     ylabel('position (deg)');
-    ylim([min(Wx(N,:))-apertureSizeDeg/2 max(Wx(N,:))+apertureSizeDeg/2]);
+%     ylim([min(Wx(N,:))-apertureSizeDeg/2 max(Wx(N,:))+apertureSizeDeg/2]);
     axis square;
+    box off
     
-    subplot(2,3,2)
+    subplot(1,5,2)
     imagesc([min(Wx(N,:))-apertureSizeDeg/2 max(Wx(N,:))+apertureSizeDeg/2],[min(t) max(t)],st);
     colormap(gca,gray);
     ylabel('time (sec)');
     xlabel('position (deg)');
     set(gca,'fontsize',16);
     axis square;
+    box off;
     
-    subplot(2,3,3)
+    subplot(1,5,3)
     imagesc([min(sf) max(sf)],[min(tf) max(tf)],(10*log10(avgPSD)));
     colormap(gca,gray);
     ylabel('temporal freq. (Hz)');
     xlabel('spatial freq. (cpd)');
     set(gca,'fontsize',16);
     axis square;
+    box off;
     
-
-%     subplot(2,3,5)
-%     plot(sf, 10*log10(sum(2*avgPSD, 1)),'-r','LineWidth',2);
-%     hold on;
-%     plot(sf, 10*log10(sum(2*noMotionAvgPSD  + 0.00001, 1)),'-b','LineWidth',2);
-%     ylabel('power (dB)');
-%     xlabel('spatial freq. (cpd)');
-%     set(gca,'fontsize',16,'yscale','linear','xscale','log');
-%     xlim([.3 60])
-%     grid on;
-    
-    subplot(2,3,5)
+    subplot(1,5,4)
     cols = jet(T*Fs/2-1);
 %     for lx = 1 : T*Fs/2-1
 %         plot(sf, 10*log10(avgPSD(T*Fs/2 + lx,:)),'-','Color',cols(lx,:),'LineWidth',2);
@@ -188,8 +187,9 @@ for di = 1:length(D)
     xlim([.5 60])
     grid on;
     axis square;
+    box off;
     
-    subplot(2,3,6)
+    subplot(1,5,5)
     plot(tf, mean(10*log10(avgPSD), 2),'-r','LineWidth',2);
 %     hold on;
 %     plot(tf, 10*log10(0.00001),'-b','LineWidth',2);
@@ -199,6 +199,7 @@ for di = 1:length(D)
     xlim([2 100])
     grid on;
     axis square;
+    box off;
     
     % break if real EM was used since D is irrelevant in this context
     if isRealEM
