@@ -1,4 +1,14 @@
 function TestIn1D
+% This function is written to perform the spectral analyses in 1D space and
+% time. It is a better playground for medium to low-end computers and 
+% computers without discrete GPUs. 
+%
+% To get realistic and naturalistic content, 100 images from 
+% http://natural-scenes.cps.utexas.edu/db.shtml were used (~40deg field of 
+% view horizontally).
+%
+%
+
 
 close all force;
 clc;
@@ -8,7 +18,7 @@ clc;
 isRealEM = 0;
 if isRealEM
     global organizedData;
-    filePath = '/Users/mnagaoglu/Personal/ganglion/organizedData.mat';
+    filePath = '../../ganglion/organizedData.mat';
     load(filePath,'organizedData');
     groupNo = 2; % 1:age-matched, 2:young-control, 3:AMD
     isFilter = 0; % eye movement traces were already filtered

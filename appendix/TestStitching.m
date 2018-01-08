@@ -3,12 +3,14 @@ function TestStitching
 % spectra...
 % hint, it does not, except for the change in overal energy, which is
 % expected.
+%
+%
 
 close all;
 clc;
 
 global organizedData;
-filePath = '/Users/mnagaoglu/Personal/ganglion/organizedData.mat';
+filePath = '../../ganglion/organizedData.mat';
 load(filePath,'organizedData');
 
 
