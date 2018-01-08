@@ -32,24 +32,24 @@ end
 usefulData = find(dataLength > minLength);
 
 
-%%%
-% notch filter
-d30 = designfilt('bandstopiir','FilterOrder',2, ...
-           'HalfPowerFrequency1',29,'HalfPowerFrequency2',31, ...
-           'DesignMethod','butter','SampleRate',480);
-% notch filter
-d60 = designfilt('bandstopiir','FilterOrder',2, ...
-           'HalfPowerFrequency1',59,'HalfPowerFrequency2',61, ...
-           'DesignMethod','butter','SampleRate',480);
-% notch filter
-d90 = designfilt('bandstopiir','FilterOrder',2, ...
-           'HalfPowerFrequency1',89,'HalfPowerFrequency2',91, ...
-           'DesignMethod','butter','SampleRate',480);
-% notch filter
-d120 = designfilt('bandstopiir','FilterOrder',2, ...
-           'HalfPowerFrequency1',119,'HalfPowerFrequency2',121, ...
-           'DesignMethod','butter','SampleRate',480);
-%%%
+% %%%
+% % notch filter
+% d30 = designfilt('bandstopiir','FilterOrder',2, ...
+%            'HalfPowerFrequency1',29,'HalfPowerFrequency2',31, ...
+%            'DesignMethod','butter','SampleRate',480);
+% % notch filter
+% d60 = designfilt('bandstopiir','FilterOrder',2, ...
+%            'HalfPowerFrequency1',59,'HalfPowerFrequency2',61, ...
+%            'DesignMethod','butter','SampleRate',480);
+% % notch filter
+% d90 = designfilt('bandstopiir','FilterOrder',2, ...
+%            'HalfPowerFrequency1',89,'HalfPowerFrequency2',91, ...
+%            'DesignMethod','butter','SampleRate',480);
+% % notch filter
+% d120 = designfilt('bandstopiir','FilterOrder',2, ...
+%            'HalfPowerFrequency1',119,'HalfPowerFrequency2',121, ...
+%            'DesignMethod','butter','SampleRate',480);
+% %%%
 
 
 driftF = [];
@@ -60,10 +60,10 @@ trialCount = 1;
 for i=1:length(usefulData)
     currentTrial = data(usefulData(i));
     Fs = round(1/median(diff(currentTrial.stitchedTime)));
-%     if Fs~=480
-        currentTrial = ResampleTraces(currentTrial,d30,d60,d90,d120);
-        data(usefulData(i)) = currentTrial;
-%     end
+% %     if Fs~=480
+%         currentTrial = ResampleTraces(currentTrial,d30,d60,d90,d120);
+%         data(usefulData(i)) = currentTrial;
+% %     end
     [~,driftF,driftPS(:,trialCount)] =...
         ComputeFFT(480,currentTrial.stitchedPosition, samplewindow);
     [~,positionF,positionPS(:,trialCount)] =...
@@ -83,8 +83,8 @@ colors = [1 0 0
 figure;
 for i=1:3
     indices = group == i;
-    dPS = mean(driftPS(:,indices),2);
-    pPS = mean(positionPS(:,indices),2);
+    dPS = nanmean(driftPS(:,indices),2);
+    pPS = nanmean(positionPS(:,indices),2);
     d(i) = semilogx((driftF),10*log10(dPS),'-','Color',colors(i,:),'LineWidth',2); hold on;
     p(i) = semilogx((positionF),10*log10(pPS),'--','Color',d(i).Color,'LineWidth',2); hold on;
 end
@@ -97,7 +97,7 @@ grid on; box off;
 legend([d p],groupLabels,'FontSize',10);
 xlim([.4 300])
 
-print([pwd filesep 'results' filesep 'EM_spectra'],'-r300','-dtiff');
+% print([pwd filesep 'results' filesep 'EM_spectra'],'-r300','-dtiff');
 
 % figure;
 % edges = 5:1:30;
@@ -159,14 +159,14 @@ for i=1:length(listing)
 %             grid on;
 %             legend('lines','circles')
             
-%             figure(fh);
-%             subplot(1,3,1)
-%             semilogx(sf,10*log10(powerSpectra(imageCounter,:)),'-b','Linewidth',1);
-%             hold on;
-%             xlabel('Spatial frequency (cpd)')
-%             ylabel('Spectral density ')
-%             set(gca,'FontSize',14);
-%             grid on;
+% %             figure(fh);
+% %             subplot(1,3,1)
+% %             semilogx(sf,10*log10(powerSpectra2(imageCounter,:)),'-b','Linewidth',1);
+% %             hold on;
+% %             xlabel('Spatial frequency (cpd)')
+% %             ylabel('Spectral density ')
+% %             set(gca,'FontSize',14);
+% %             grid on;
             
             % now make movies with eye movements and the current image and
             % compute 3D-FFT, take average across spatial orientations and
@@ -181,7 +181,7 @@ for i=1:length(listing)
                 currentTrial = data(usefulData(j));
                 newPixelSizeDeg = apertureSizeDeg/imageSize;
                 driftShifts = round(currentTrial.stitchedPosition/newPixelSizeDeg);
-                positionShifts = round(currentTrial.filteredPosition/newPixelSizeDeg);
+                positionShifts = round(currentTrial.newPos/newPixelSizeDeg);
                 
                 % first drifts only
                 [drift2DPS, driftSF, driftTF, driftFlag] = ...
@@ -213,9 +213,9 @@ for i=1:length(listing)
                 currentGroup = currentTrial.group;
                 trialNumber = j; %#ok<*NASGU>
                 
-                SaveFunction(savefilename,drift2DPS,position2dPS,...
-                    driftSF,driftTF,driftFlag,posSF,posTF,posFlag,currentGroup,...
-                    imageCounter,trialNumber);
+%                 SaveFunction(savefilename,drift2DPS,position2dPS,...
+%                     driftSF,driftTF,driftFlag,posSF,posTF,posFlag,currentGroup,...
+%                     imageCounter,trialNumber);
                 
                 fprintf('\n----------------2D PSD saved.-----------------------\n\n');
             end
@@ -525,25 +525,30 @@ try
 newRawTime = currentTrial.rawTime(1):1/480:currentTrial.rawTime(end);
 newStitchedTime = currentTrial.rawTime(1):1/480:currentTrial.rawTime(end);
 
-indices = ~isnan(currentTrial.newPos(:,1));
-newFilteredPosition(:,1) = interp1(currentTrial.newTime(indices),...
-    currentTrial.newPos(indices,1),newRawTime,'pchip',NaN);
-newFilteredPosition(:,2) = interp1(currentTrial.newTime(indices),...
-    currentTrial.newPos(indices,2),newRawTime,'pchip',NaN);
+% indices = ~isnan(currentTrial.newPos(:,1));
+% newFilteredPosition(:,1) = interp1(currentTrial.newTime(indices),...
+%     currentTrial.newPos(indices,1),newRawTime,'pchip',nan);
+% newFilteredPosition(:,2) = interp1(currentTrial.newTime(indices),...
+%     currentTrial.newPos(indices,2),newRawTime,'pchip',nan);
+% 
+% indices = ~isnan(currentTrial.stitchedPosition(:,1));
+% newStitchedPosition(:,1) = interp1(currentTrial.stitchedTime(indices),...
+%     currentTrial.stitchedPosition(indices,1),newStitchedTime,'pchip',nan);
+% newStitchedPosition(:,2) = interp1(currentTrial.stitchedTime(indices),...
+%     currentTrial.stitchedPosition(indices,2),newStitchedTime,'pchip',nan);
+% 
 
-indices = ~isnan(currentTrial.stitchedPosition(:,1));
-newStitchedPosition(:,1) = interp1(currentTrial.stitchedTime(indices),...
-    currentTrial.stitchedPosition(indices,1),newStitchedTime,'pchip',NaN);
-newStitchedPosition(:,2) = interp1(currentTrial.stitchedTime(indices),...
-    currentTrial.stitchedPosition(indices,2),newStitchedTime,'pchip',NaN);
 
 
+newFilteredPosition = currentTrial.filteredPosition;
+newStitchedPosition = currentTrial.stitchedPosition;
+newFixedJumpPos = currentTrial.newPos;
 
 indices = ~isnan(newFilteredPosition(:,1));
 newFilteredPosition = newFilteredPosition(indices,:);
 indices = ~isnan(newStitchedPosition(:,1));
 newStitchedPosition = newStitchedPosition(indices,:);
-       
+newStitchedTime = newStitchedTime(indices);
        
 newFilteredPosition(:,1) = filtfilt(d30,newFilteredPosition(:,1));   
 newFilteredPosition(:,2) = filtfilt(d30,newFilteredPosition(:,2)); 
@@ -563,12 +568,20 @@ newStitchedPosition(:,2) = filtfilt(d90,newStitchedPosition(:,2));
 newStitchedPosition(:,1) = filtfilt(d120,newStitchedPosition(:,1));   
 newStitchedPosition(:,2) = filtfilt(d120,newStitchedPosition(:,2)); 
 
-
+newFixedJumpPos(:,1) = filtfilt(d30,newFixedJumpPos(:,1));   
+newFixedJumpPos(:,2) = filtfilt(d30,newFixedJumpPos(:,2)); 
+newFixedJumpPos(:,1) = filtfilt(d60,newFixedJumpPos(:,1));   
+newFixedJumpPos(:,2) = filtfilt(d60,newFixedJumpPos(:,2)); 
+newFixedJumpPos(:,1) = filtfilt(d90,newFixedJumpPos(:,1));   
+newFixedJumpPos(:,2) = filtfilt(d90,newFixedJumpPos(:,2)); 
+newFixedJumpPos(:,1) = filtfilt(d120,newFixedJumpPos(:,1));   
+newFixedJumpPos(:,2) = filtfilt(d120,newFixedJumpPos(:,2)); 
 
 currentTrial.stitchedPosition = newStitchedPosition;
 currentTrial.stitchedTime = newStitchedTime;
 currentTrial.filteredPosition = newFilteredPosition;
 currentTrial.rawTime = newRawTime;
+currentTrial.newPos = newFixedJumpPos;
 
 catch err
     err;
