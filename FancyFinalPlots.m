@@ -14,7 +14,7 @@ fileFormat = '-dtiff';
 global fsize;
 fsize = 15;
 
-isSave = 1;
+isSave = 0;
 if isSave
     if exist([pwd filesep 'results/stats_new.txt'],'file')
         delete([pwd filesep 'results/stats_new.txt']);
