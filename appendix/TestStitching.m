@@ -7,13 +7,18 @@ function TestStitching
 close all;
 clc;
 
+global organizedData;
+filePath = '/Users/mnagaoglu/Personal/ganglion/organizedData.mat';
+load(filePath,'organizedData');
+
+
 isPlotTime = 0;
 
 % iterations
 N = 5000;
 
 % define temporal parameters
-T = fliplr([1/8 1/4 1/2 1 2]); % seconds 
+T = fliplr([1/8 1/4 1/2 1 2 4]); % seconds 
 Fs = 512; % Hz
 D = 40; % arcmin^2/sec diffusion constant;
 
@@ -24,8 +29,12 @@ for i=1:length(T)
 
     try
         for iter=1:N
-            % simulate eye motion
-            [W, t, dt] = SimulateEyeMovements(T(i),Fs,D);
+            
+%             % simulate eye motion
+%             [W, t, dt] = SimulateEyeMovements(T(i),Fs,D);
+            
+            % get real eye motion
+            [W, t, dt] = GetRealEyeMovements(T(i),Fs);
 
             % take fft
             tempFW = abs(fftshift(fft(W)));
@@ -69,10 +78,6 @@ end
 
 
 
-
-
-
-
 function [W, t, dt] = SimulateEyeMovements(T,Fs,D)
 
 % Definition of variables
@@ -82,13 +87,63 @@ if nargin<2
 end
 
 diffusion = D/3600; % deg^2/sec
-nsamples = 1; % indicates the number of instances of Brownian motion 
 t = linspace(0,T, T*Fs); % time array for plotting
 dt = diff(t(1:2));
 
 % Standard Brownian motion (with correlation)
-dW = sqrt(2*diffusion*dt) * randn(nsamples,length(t)-1); 
-W = [zeros(nsamples,1) cumsum(dW,2)];
+dW = sqrt(2*diffusion*dt) * randn(1,length(t)-1); 
+W = [zeros(1,1) cumsum(dW,2)];
+
+
+
+
+function [W, t, dt] = GetRealEyeMovements(T,Fs)
+
+global organizedData;
+
+% normal young observers, group=2
+groups = [organizedData.group];
+youngIndices = find(groups == 2);
+
+% get a random subject
+subjectIndex = randi(length(youngIndices),1);
+
+% get the time and position traces
+time = organizedData(youngIndices(subjectIndex)).newTime;
+pos = organizedData(youngIndices(subjectIndex)).newPos;
+
+% how many samples requested
+nSamples = T*Fs;
+
+% get a random chunk of data
+actualDt = diff(time(1:2));
+actualSamples = round(T/actualDt);
+startIndex = randi(length(time)-actualSamples-1,1);
+
+% interpolate time and pos according to the requested sampling rate
+
+newTime = interp1(0:actualDt:actualDt*(actualSamples-1), ...
+                time(startIndex:startIndex+actualSamples-1), ...
+                0:1/Fs:(1/Fs)*(nSamples-1), 'pchip');
+newPos = interp1(time(startIndex:startIndex+actualSamples-1), ...
+                pos(startIndex:startIndex+actualSamples-1,2), ...
+                newTime, 'pchip');
+            
+dt = 1/Fs;
+W = newPos - newPos(1);
+t = newTime - newTime(1);
+
+% figure;
+% plot(time(startIndex:startIndex+actualSamples-1)-time(startIndex),...
+%     pos(startIndex:startIndex+actualSamples-1,2) - pos(startIndex,2),...
+%     '-r','LineWidth',2); 
+% hold on;
+% plot(t,W,'-b','LineWidth',2);
+% xlabel('time (sec)')
+
+
+
+
 
 
 
