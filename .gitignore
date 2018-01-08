@@ -1,2 +1,5 @@
 *.jpg
 appendix/images/
+*.tiff
+*.tif
+*.asv
