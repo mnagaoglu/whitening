@@ -10,7 +10,7 @@ function TestIn1D
 %
 
 
-close all force;
+% close all force;
 clc;
 
 % to use real eye movement traces instead of simulating them as Brownian
@@ -56,10 +56,11 @@ lineLengthPx = 512;
 T = 1; % seconds 
 Fs = 512; % Hz
 D = 100; % arcmin^2/sec diffusion constant;
-% Dratios = [.001 .01 .1 .2 .5 1 2 5 10 100 1000];
+% Dratios = [.01 .1 .2 .5 1 2 5 10 100];
 Dratios = 1;
-actualDx = sqrt(D^2./(Dratios.^2 + 1));
-actualDy = actualDx .* Dratios;
+% actualDx = sqrt(D^2./(Dratios.^2 + 1));
+actualDx = (D.*Dratios./(Dratios + 1));
+actualDy = actualDx ./ Dratios;
 t = linspace(-T/2,T/2, T*Fs);
 
 forLegend = [];
@@ -117,7 +118,7 @@ for di = 1:length(actualDx)
         st = zeros(length(T*Fs), lineLengthPx);
         for i=1:length(t)
             if is2D
-                st(i,:) = im(y+eyeMovementsPxY(i), ...
+                st(i,:) = im(y+eyeMovementsPxY(i) , ...
                              x+eyeMovementsPxX(i) : x+eyeMovementsPxX(i)+lineLengthPx-1);
             else
                 st(i,:) = im(y, ...
@@ -249,7 +250,7 @@ end
 
 while true
     y = randi(height,1); 
-    if (y + min(eyeMovementsPxY)) > 1 && (y + max(eyeMovementsPxY)) < height
+    if (y + min(eyeMovementsPxY)) > 1 && (y + max(eyeMovementsPxY) + lineLengthPx) < height
         break;
     end
 end
