@@ -9,7 +9,7 @@ function TestStitching
 close all;
 clc;
 
-isRealEM = 1;
+isRealEM = 0;
 
 
 if isRealEM

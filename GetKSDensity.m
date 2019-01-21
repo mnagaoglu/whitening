@@ -1,7 +1,7 @@
-function [density, X, Y, bandwidth, PRL, fh, stats] = GetKSDensity(xDeg, yDeg, flag)
+function [density, X, Y, bandwidth, PRL, fh, stats] = GetKSDensity(xDeg, yDeg, isShowPlot)
 
 if nargin<3
-    flag = 1;
+    isShowPlot = 0;
 end
 data = [xDeg yDeg];
 
@@ -11,7 +11,7 @@ xy = [xDeg(use) yDeg(use)];
 % Perform 2d kernel density estimation on the gaze data
 kdetrim = 0.045; % set a cutoff for the trimming function
 bw = std(xy)/length(xy)^(1/6); % bandwidth size
-[bandwidth,density,X,Y] = kde2d_trimmed(kdetrim, xy, 512,[], [], bw);
+[bandwidth,density,X,Y] = kde2d_trimmed(kdetrim, xy, 128,[], [], bw);
 
 if isnan(density)
     density = NaN;
@@ -29,26 +29,25 @@ maxdensity = max(density(:));
 I = find(maxdensity == density);
 PRL = [X(I), Y(I)];
 
+
+
+
+fh = figure;
+h = polar([0 2*pi], [0 15]);
+delete(h);
+hold on;
+
+msize = 20;
+mcolor = 'k';
+sh = scatter(xDeg, yDeg,msize,mcolor,'filled','MarkerEdgeColor','none');
+sh.MarkerFaceAlpha = 0.3;
+
 steps = linspace(min(density(:)),max(density(:)),19);
 steps = steps(2:end-1);
-
-% if flag
-    fh = figure;
-    h = polar([0 2*pi], [0 15]);
-    delete(h);
-    hold on;
-    scotoma = rectangle('Position',[-4 -4 2*4 2*4],'Curvature',[1 1]);
-    scotoma.FaceColor = [0.8 .8 .8];
-    scotoma.EdgeColor = [0.8 .8 .8];
-
-    
-    [C, ch] = contour(X,Y,reshape(density,size(X,1),size(X,2)),steps); hold on
-%     plot(data(:,1),data(:,2),'k.','MarkerSize',2);
-    plot(PRL(1),PRL(2),'+r','MarkerSize',15);
-    caxis([0 .075]);
-    colormap(jet)
-    % axis equal
-% end
+[C, ch] = contour(X,Y,reshape(density,size(X,1),size(X,2)),steps); hold on
+plot(PRL(1),PRL(2),'+r','MarkerSize',15);
+caxis([0 .075]);
+colormap(jet)
 
 
 
@@ -74,7 +73,7 @@ stats.bcea = bcea;
 cumProb = sum(density(:));
 isoAreas = [];
 isoProb = [];
-for i=1:length(steps)-1;
+for i=1:length(steps)
 
     try
         if i==1
@@ -84,8 +83,6 @@ for i=1:length(steps)-1;
             st = en+2;
             en = C(2,st-1)+st-1;
         end
-
-%         fprintf('%d %d\n',st,en);
         
         islands = find(C(1,:) == steps(i));
         in = false(length(X(:)),1);
@@ -106,13 +103,10 @@ for i=1:length(steps)-1;
         err.stack.line
         err.stack.name
         fprintf('Error occured during isoline method\n');
+        rethrow(err)
     end
 end
-% figure('Position',[100 800 500 500]); 
-% subplot(1,2,1);
-% plot(isoProb);
-% subplot(1,2,2);
-% plot(isoAreas);
+
 
 try
     desiredStep = interp1(isoProb,steps,0.68,'pchip');
@@ -122,24 +116,28 @@ try
 
 
     islands = find(C(1,:) == desiredStep);
-    areaInContour = 0;
+    isoa = 0;
     for i=1:length(islands)
         st = islands(i)+1;
         xv = C(1,st:C(2,st-1)+st-1);
         yv = C(2,st:C(2,st-1)+st-1);
-        areaInContour = areaInContour + polyarea(xv,yv);
+        isoa = isoa + polyarea(xv,yv);
     end
-    stats.areaInContour = areaInContour;
+    stats.areaInContour = isoa;
     stats.isoProb = isoProb;
     stats.isoAreas = isoAreas;
 catch erriso
     erriso.message
     fprintf('\n\nError during interpolation or isoline area computation...\n')
+    rethrow(erriso)
 end
 
-if flag
+
+if isShowPlot
     figure(fh);
-    title(sprintf('PRL %.2f %.2f, BCEA: %.2f, ISO: %.2f',PRL(1), PRL(2),bcea, areaInContour));
+    title(sprintf('PRL %.2f %.2f \n BCEA: %.2f, ISOA: %.2f',PRL(1), PRL(2),...
+        bcea, isoa));
+    set(gca,'fontsize',16)
 else
     if ~isempty(fh)
         delete(fh);

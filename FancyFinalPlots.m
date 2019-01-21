@@ -21,12 +21,12 @@ if isSave
     end
     diary([pwd filesep 'results/stats_new.txt']);
 end
-load('E:\\Eye movement data for Whitening study\\Natural Images database\\To be analyzed\\PSimages_512.mat');
-
-try
-    powerSpectra = powerSpectra2; % circle averaging method
-catch
-end
+% load('E:\\Eye movement data for Whitening study\\Natural Images database\\To be analyzed\\PSimages_512.mat');
+% 
+% try
+%     powerSpectra = powerSpectra2; % circle averaging method
+% catch
+% end
 
 % the following variables will be loaded: 
 %       'driftAVG','driftSE','posAVG','posSE',...
@@ -614,7 +614,7 @@ end
 
 
 %% Diffusion vs WF
-load([pwd filesep 'ganglion/diffusionData_n128.mat']);
+load(['../ganglion/diffusionData_n128.mat']);
 % reorder diffusion constants so that values correspond to the list under subjects array.
 for i=1:length(subjects{3}) %#ok<*USENS>
     for j=1:length(diffusionData)
@@ -686,6 +686,16 @@ ax.YColor = axesColor;
 if isSave
 print([pwd filesep 'results' filesep 'correlations_diffusion'],'-r300',fileFormat);
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
