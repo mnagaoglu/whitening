@@ -4,6 +4,9 @@ function FancyFinalPlots
 close all force;
 clc;
 
+addpath([pwd filesep 'utils/'])
+addpath([pwd filesep 'data/'])
+
 backgroundColor = [1 1 1];
 axesColor = [0 0 0];
 myColors = {'r','k','b'};
@@ -21,12 +24,13 @@ if isSave
     end
     diary([pwd filesep 'results/stats_new.txt']);
 end
-% load('E:\\Eye movement data for Whitening study\\Natural Images database\\To be analyzed\\PSimages_512.mat');
-% 
-% try
-%     powerSpectra = powerSpectra2; % circle averaging method
-% catch
-% end
+
+
+load('PSimages_512.mat');
+try
+    powerSpectra = powerSpectra2; % circle averaging method
+catch
+end
 
 % the following variables will be loaded: 
 %       'driftAVG','driftSE','posAVG','posSE',...
