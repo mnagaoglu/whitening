@@ -13,3 +13,7 @@ To get realistic and naturalistic content, 100 images from http://natural-scenes
 
 
 MNA 1/2018  mnagaoglu@gmail.com
+MNA 5/2019  re-organized folder structure. converted absolute paths to relative. merged diffusion simulation and data with this repo.
+
+
+
