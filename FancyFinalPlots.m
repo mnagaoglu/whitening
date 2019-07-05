@@ -1,7 +1,7 @@
 function FancyFinalPlots
 % The final function to plot everything in publication/presentation quality.
 
-close all force;
+% close all force;
 clc;
 
 addpath([pwd filesep 'utils/'])
@@ -644,6 +644,37 @@ for i=1:length(allSubjects) %#ok<*USENS>
 end
 
 
+%%%%%% 7/3/2019
+% s.subject = {};
+% s.whiteningFactor = [];
+% s.diffusionConstant = [];
+% s.groupNumber = [];
+% dataForFigure5B = repmat(s,length(allSubjects),1);
+% for i=1:length(allSubjects)
+%     dataForFigure5B(i).subject = allSubjects{i};
+%     dataForFigure5B(i).whiteningFactor = allW(i);
+%     dataForFigure5B(i).diffusionConstant = allDrift(i);
+%     dataForFigure5B(i).groupNumber = groupNumbers(i);
+% end
+% 
+% figure;
+% msize = 150;
+% cols = {'r','k','b'};
+% for i=[2 1 3]
+%     ix = [dataForFigure5B.groupNumber] == i;
+%     s = scatter(log10([dataForFigure5B(ix).diffusionConstant]),...
+%         [dataForFigure5B(ix).whiteningFactor],msize,cols{i}); hold on;
+%     s.MarkerFaceAlpha = 0.7;
+% end
+% set(gca,'fontsize',14);
+% grid on;
+% legend('Young','Older','MD')
+% xlabel(['log[Diffusion constant]' newline '(log arcmin^2/sec)'])
+% ylabel('Whitening factor')
+
+
+
+
 
 figure('Color',backgroundColor,'InvertHardcopy','off','units','normalized',...
     'outerposition',[.1 .1 0.1990    0.3861]);
@@ -703,9 +734,9 @@ end
 
 
 
-if isSave
+% if isSave
     diary off;
-end
+% end
 
 end
 
