@@ -7,8 +7,8 @@ This repo contains analysis scripts, figures, and some intermediate data for the
   [WhiteningSpectralAnalysisGPU.m](WhiteningSpectralAnalysisGPU.m) : The MAIN analysis function. Uses GPU. <br>
   [ComputeAveragePSDs.m](ComputeAveragePSDs.m) : as the name suggests, it was used to compute average PSD. It must be run again if WhiteningSpectralAnalysisGPU is run again. <br>
   [FancyFinalPlots.m](FancyFinalPlots.m) : The final plotting script for publication quality images. <br>
- !-- [DONOTUSE_WhiteningSpectralAnalysisPar.m] : OBSOLETE. do not use. it's here for only bookkeeping reasons. <br>--!
-     
+
+
 There are also several short scripts under [utils/](utils/) to generate some of the intermediate data or figures.  
 
 We used 100 natural images from http://natural-scenes.cps.utexas.edu/db.shtml (~40deg field of view horizontally).
