@@ -20,4 +20,5 @@ For questions/comments: mnagaoglu@gmail.com
 |:-------------:|:-------------:|:----- |
 | MNA      | 1/2018 | initial commit |
 | MNA      | 5/2019      |  re-organized folder structure. converted absolute paths to relative. merged diffusion simulation and data with this repo. |
+| MNA      | 7/2019 | final cleanup for submission. fixed an issue affecting Figure 5B and A3. |
 
